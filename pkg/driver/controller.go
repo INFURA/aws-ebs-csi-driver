@@ -570,7 +570,11 @@ func newCreateVolumeResponse(disk *cloud.Disk) *csi.CreateVolumeResponse {
 		}
 	}
 
-	segments := map[string]string{TopologyKey: disk.AvailabilityZone}
+	segments := map[string]string{
+		TopologyKey:                                disk.AvailabilityZone,
+		"failure-domain.beta.kubernetes.io/zone":   disk.AvailabilityZone,
+		"failure-domain.beta.kubernetes.io/region": disk.AvailabilityZone[0 : len(disk.AvailabilityZone)-1],
+	}
 
 	arn, err := arn.Parse(disk.OutpostArn)
 
